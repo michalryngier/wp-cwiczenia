@@ -1,4 +1,6 @@
 ﻿using System;
+using wp_zadanie1.Lista;
+using wp_zadanie1.Rysownik;
 
 namespace wp_zadanie1
 {
@@ -39,6 +41,10 @@ namespace wp_zadanie1
             Write("\nPobieram ostatni niepusty element i go usuwam (Pop()):");
             Write(myCustomList.Pop());
             
+            // Długość.
+            Write("\nDługość:");
+            Write(myCustomList.Size());
+            
             // Wyczyść listę
             Write("\nCzyszczę listę i pokazuję element z indexem 0:");
             myCustomList.Clear();
@@ -48,15 +54,17 @@ namespace wp_zadanie1
             Write(
                 "/*---------------------------------- Zadanie 2 ----------------------------------*/"
             );
+            Drawer square = new Square(10);
+            square.Draw();
+            Drawer rectangle = new Rectangle(10, 5);
+            rectangle.Draw();
+            Drawer triangle = new Triangle(9, 5);
+            triangle.Draw();
         }
 
         static void Write<T>(T text)
         {
-            if (text == null) {
-                Console.WriteLine("null");
-            } else {
-                Console.WriteLine(text.ToString());
-            }
+            Console.WriteLine(text == null ? "null" : text.ToString());
         }
     }
 }

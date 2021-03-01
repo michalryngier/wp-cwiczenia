@@ -1,7 +1,7 @@
 using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 
-namespace wp_zadanie1
+namespace wp_zadanie1.Lista
 {
     public interface IMyList<T>
     {

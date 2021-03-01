@@ -1,6 +1,6 @@
 using System;
 
-namespace wp_zadanie1
+namespace wp_zadanie1.Lista
 {
     public class MyCustomList<T> : IMyList<T>
     {
