@@ -4,6 +4,8 @@ using wp_zadanie2.Lists;
 using wp_zadanie2.SortingStrategies.IntegerSorting;
 using static System.Int32;
 
+
+
 namespace wp_zadanie2
 {
     class Program
