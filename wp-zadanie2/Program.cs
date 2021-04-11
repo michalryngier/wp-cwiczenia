@@ -16,7 +16,6 @@ namespace wp_zadanie2
             bool selected = false, validData = true;
             BaseList<int> myIntegerList = new MyIntegerList();
 
-
             Console.WriteLine("----------Welcome to List Sorter!----------");
             Console.WriteLine("Please choose one option from below:");
             Console.WriteLine("  1. I'll provide data myself.\n  2. Generate random data.");
