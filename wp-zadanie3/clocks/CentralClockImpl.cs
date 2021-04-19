@@ -45,7 +45,7 @@ namespace wp_zadanie3.clocks
                 _screens.RemoveAt(index);
             }
             catch (Exception) {
-                Console.WriteLine("Cannot remove screen.");
+                Console.WriteLine("Cannot remove a screen.");
             }
         }
 

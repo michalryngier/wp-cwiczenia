@@ -152,7 +152,7 @@ namespace wp_zadanie3.clocks
                 _screens.RemoveAt(index);
             }
             catch (Exception) {
-                Console.WriteLine("Cannot remove screen.");
+                Console.WriteLine("Cannot remove a screen.");
             }
         }
 
@@ -163,7 +163,13 @@ namespace wp_zadanie3.clocks
             _working = true;
             _clockTask = Task.Run(() => TimeLoop(++_clockTaskId));
         }
+```
 
+<div style="page-break-after: always; visibility: hidden"> 
+\pagebreak 
+</div>
+
+```
         public void Stop()
         {
             _working = false;
@@ -248,10 +254,6 @@ namespace wp_zadanie3.screens
 }
 ```
 
-<div style="page-break-after: always; visibility: hidden"> 
-\pagebreak 
-</div>
-
 <div id="GS"></div>
 
 ## GardenScreen.cs
@@ -293,6 +295,10 @@ namespace wp_zadanie3.screens
 }
 ```
 
+<div style="page-break-after: always; visibility: hidden"> 
+\pagebreak 
+</div>
+
 <div id="LS"></div>
 
 ## LivingroomScreen.cs
@@ -312,10 +318,6 @@ namespace wp_zadanie3.screens
     }
 }
 ```
-
-<div style="page-break-after: always; visibility: hidden"> 
-\pagebreak 
-</div>
 
 # Interfaces
 
