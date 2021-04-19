@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Security.Cryptography.X509Certificates;
 using wp_zadanie3.clocks;
 using wp_zadanie3.screens;
 
@@ -13,7 +10,7 @@ namespace wp_zadanie3
         static void Main(string[] args)
         {
             string input;
-            var centralClock = new CentralClockImpl(5000);
+            var centralClock = new CentralClockImpl();
             var screens = new Dictionary<string, IScreen>()
             {
                 {"kitchen", new KitchenScreen()},
@@ -61,7 +58,6 @@ namespace wp_zadanie3
                 }
             } while (input != "6");
 
-            centralClock.Stop();
             centralClock.Stop();
             Console.WriteLine("Zatrzymano zegar. Wychodzenie...");
         }

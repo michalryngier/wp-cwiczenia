@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
+using System.Threading.Tasks;
 using wp_zadanie3.interfaces;
 using wp_zadanie3.screens;
 
@@ -11,8 +13,9 @@ namespace wp_zadanie3.clocks
     {
         private readonly List<IScreen> _screens;
         private readonly int _interval = 60000;
-        private int _timestamp;
+        private int _timestamp, _clockTaskId;
         private volatile bool _working;
+        private Task _clockTask;
 
         public CentralClockImpl()
         {
@@ -41,32 +44,43 @@ namespace wp_zadanie3.clocks
         public void Unsubscribe(IScreen screen)
         {
             try {
-                var index = _screens.IndexOf(_screens.Last(s => s.Name == screen.Name));
+                var index = _screens.IndexOf(screen);
                 _screens.RemoveAt(index);
             }
-            catch (Exception e) {
-                Console.WriteLine("Cannot remove screen. Sorry.");
+            catch (Exception) {
+                Console.WriteLine("Cannot remove screen.");
             }
         }
 
-        private bool HasSubscriber(IScreen screen)
+        public void Start()
         {
-            try {
-                if (_screens.Count - 1 < 0) throw new ArgumentNullException();
-                var index = _screens.IndexOf(_screens.Last(s => s.Name == screen.Name));
-                return index < _screens.Count;
-            }
-            catch (Exception) {
-                return false;
+            if (_working) return;
+            _timestamp = GetCurrentTimeStamp();
+            _working = true;
+            _clockTask = Task.Run(() => TimeLoop(++_clockTaskId));
+        }
+
+        public void Stop()
+        {
+            _working = false;
+        }
+
+        private void TimeLoop(int taskId)
+        {
+            while (_working && taskId == _clockTaskId) {
+                NotifyObservers();
+                _timestamp += _interval / 1000;
+                _clockTask.Wait(_interval);
             }
         }
 
         /**
-         * Returns true when a Subscriber was added or false when it was removed.
+         * Returns IScreen type object or null.
          */
         public bool AddOrRemoveSubscriber(IScreen screen)
         {
-            if (HasSubscriber(screen)) {
+            var newScreen = HasSubscriber(screen);
+            if (newScreen != null) {
                 Unsubscribe(screen);
                 return false;
             }
@@ -75,29 +89,14 @@ namespace wp_zadanie3.clocks
             return true;
         }
 
-        public void Start()
+        private IScreen HasSubscriber(IScreen screen)
         {
-            if (_working) return;
-            _timestamp = GetCurrentTimeStamp();
-            _working = true;
-            var thread = new ThreadStart(TimeLoop);
-            var backgroundThread = new Thread(thread);
-            backgroundThread.Start();
-        }
-
-        public void Stop()
-        {
-            _working = false;
-        }
-
-        private void TimeLoop()
-        {
-            while (_working) {
-                Thread.Sleep(_interval);
-                _timestamp += _interval / 1000;
-                if (_working) {
-                    NotifyObservers();
-                }
+            try {
+                if (_screens.Count - 1 < 0) throw new ArgumentNullException();
+                return _screens.Last(s => s.Name == screen.Name);
+            }
+            catch (Exception) {
+                return null;
             }
         }
 
