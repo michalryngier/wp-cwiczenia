@@ -1,4 +1,4 @@
-using System;
+using wp_zadanie3.interfaces;
 
 namespace wp_zadanie3.screens
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using wp_zadanie3.clocks;
+using wp_zadanie3.interfaces;
 using wp_zadanie3.screens;
 
 namespace wp_zadanie3

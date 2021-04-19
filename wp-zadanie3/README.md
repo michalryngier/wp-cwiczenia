@@ -10,14 +10,14 @@
 
 #  Pliki:
 
-- clocks:
+- Clocks:
     - <a href="#CCI">CentralClockImpl.cs</a>
-- screens:
+- Screens:
     - <a href="#BSI">BaseScreenImpl.cs</a>
     - <a href="#GS">GardenScreen.cs</a>
     - <a href="#KS">KitchenScreen.cs</a>
     - <a href="#LS">LivingroomScreen.cs</a>
--  interfaces:
+-  Interfaces:
     - <a href="#IC">IClock.cs</a>
     - <a href="#IS">IScreen.cs</a>
 - <a href="#P">Program.cs</a>
@@ -32,6 +32,7 @@
 using System;
 using System.Collections.Generic;
 using wp_zadanie3.clocks;
+using wp_zadanie3.interfaces;
 using wp_zadanie3.screens;
 
 namespace wp_zadanie3
@@ -41,7 +42,7 @@ namespace wp_zadanie3
         static void Main(string[] args)
         {
             string input;
-            var centralClock = new CentralClockImpl(5000);
+            var centralClock = new CentralClockImpl();
             var screens = new Dictionary<string, IScreen>()
             {
                 {"kitchen", new KitchenScreen()},
@@ -90,7 +91,6 @@ namespace wp_zadanie3
             } while (input != "6");
 
             centralClock.Stop();
-            centralClock.Stop();
             Console.WriteLine("Zatrzymano zegar. Wychodzenie...");
         }
     }
@@ -108,9 +108,8 @@ namespace wp_zadanie3
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using wp_zadanie3.interfaces;
-using wp_zadanie3.screens;
 
 namespace wp_zadanie3.clocks
 {
@@ -118,8 +117,9 @@ namespace wp_zadanie3.clocks
     {
         private readonly List<IScreen> _screens;
         private readonly int _interval = 60000;
-        private int _timestamp;
+        private int _timestamp, _clockTaskId;
         private volatile bool _working;
+        private Task _clockTask;
 
         public CentralClockImpl()
         {
@@ -148,38 +148,12 @@ namespace wp_zadanie3.clocks
         public void Unsubscribe(IScreen screen)
         {
             try {
-                var index = _screens.IndexOf(_screens.Last(s => s.Name == screen.Name));
+                var index = _screens.IndexOf(screen);
                 _screens.RemoveAt(index);
             }
-            catch (Exception e) {
-                Console.WriteLine("Cannot remove screen. Sorry.");
-            }
-        }
-
-        private bool HasSubscriber(IScreen screen)
-        {
-            try {
-                if (_screens.Count - 1 < 0) throw new ArgumentNullException();
-                var index = _screens.IndexOf(_screens.Last(s => s.Name == screen.Name));
-                return index < _screens.Count;
-            }
             catch (Exception) {
-                return false;
+                Console.WriteLine("Cannot remove screen.");
             }
-        }
-
-        /**
-         * Returns true when a Subscriber was added or false when it was removed.
-         */
-        public bool AddOrRemoveSubscriber(IScreen screen)
-        {
-            if (HasSubscriber(screen)) {
-                Unsubscribe(screen);
-                return false;
-            }
-
-            Subscribe(screen);
-            return true;
         }
 
         public void Start()
@@ -187,9 +161,7 @@ namespace wp_zadanie3.clocks
             if (_working) return;
             _timestamp = GetCurrentTimeStamp();
             _working = true;
-            var thread = new ThreadStart(TimeLoop);
-            var backgroundThread = new Thread(thread);
-            backgroundThread.Start();
+            _clockTask = Task.Run(() => TimeLoop(++_clockTaskId));
         }
 
         public void Stop()
@@ -197,14 +169,38 @@ namespace wp_zadanie3.clocks
             _working = false;
         }
 
-        private void TimeLoop()
+        private void TimeLoop(int taskId)
         {
-            while (_working) {
-                Thread.Sleep(_interval);
+            while (_working && taskId == _clockTaskId) {
+                NotifyObservers();
                 _timestamp += _interval / 1000;
-                if (_working) {
-                    NotifyObservers();
-                }
+                _clockTask.Wait(_interval);
+            }
+        }
+
+        /**
+         * Returns IScreen type object or null.
+         */
+        public bool AddOrRemoveSubscriber(IScreen screen)
+        {
+            var oldScreen = HasSubscriber(screen);
+            if (oldScreen != null) {
+                Unsubscribe(oldScreen);
+                return false;
+            }
+
+            Subscribe(screen);
+            return true;
+        }
+
+        private IScreen HasSubscriber(IScreen screen)
+        {
+            try {
+                if (_screens.Count - 1 < 0) throw new ArgumentNullException();
+                return _screens.Last(s => s.Name == screen.Name);
+            }
+            catch (Exception) {
+                return null;
             }
         }
 
@@ -220,6 +216,134 @@ namespace wp_zadanie3.clocks
             var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return dtDateTime.AddSeconds(_timestamp).ToString("HH:mm");
         }
+    }
+}
+```
+
+<div style="page-break-after: always; visibility: hidden"> 
+\pagebreak 
+</div>
+
+# Screens:
+
+<div id="BSI"></div>
+
+## BaseScreenImpl.cs
+```
+using wp_zadanie3.interfaces;
+
+namespace wp_zadanie3.screens
+{
+    public abstract class BaseScreenImpl : IScreen
+    {
+        protected BaseScreenImpl(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; }
+
+        public abstract void UpdateTime(string time);
+    }
+}
+```
+
+<div style="page-break-after: always; visibility: hidden"> 
+\pagebreak 
+</div>
+
+<div id="GS"></div>
+
+## GardenScreen.cs
+```
+using System;
+using System.ComponentModel;
+
+namespace wp_zadanie3.screens
+{
+    public class GardenScreen : BaseScreenImpl
+    {
+        public GardenScreen() : base("Ogród") { }
+
+        public override void UpdateTime(string time)
+        {
+            Console.WriteLine("W ogrodzie jest godzina: " + time);
+        }
+    }
+}
+```
+
+<div id="GS"></div>
+
+## KitchenScreen.cs
+```
+using System;
+
+namespace wp_zadanie3.screens
+{
+    public class KitchenScreen : BaseScreenImpl
+    {
+        public KitchenScreen() : base("Kuchnia") { }
+        
+        public override void UpdateTime(string time)
+        {
+            Console.WriteLine("W kuchni jest godzina: " + time);
+        }
+    }
+}
+```
+
+<div id="LS"></div>
+
+## LivingroomScreen.cs
+```
+using System;
+
+namespace wp_zadanie3.screens
+{
+    public class LivingroomScreen : BaseScreenImpl
+    {
+        public LivingroomScreen() : base("Pokój") { }
+
+        public override void UpdateTime(string time)
+        {
+            Console.WriteLine("W pokoju jest godzina: " + time);
+        }
+    }
+}
+```
+
+<div style="page-break-after: always; visibility: hidden"> 
+\pagebreak 
+</div>
+
+# Interfaces
+
+<div id="IC"></div>
+
+## IClock.cs
+```
+namespace wp_zadanie3.interfaces
+{
+    public interface IClock
+    {
+        void NotifyObservers();
+        void Subscribe(IScreen screen);
+        void Unsubscribe(IScreen screen);
+    }
+}
+```
+
+<div id="IS"></div>
+
+## IScreen.cs
+```
+namespace wp_zadanie3.interfaces
+{
+    public interface IScreen
+    {
+        string Name { get; }
+        public void UpdateTime(string time);
     }
 }
 ```

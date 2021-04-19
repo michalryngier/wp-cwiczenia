@@ -1,5 +1,3 @@
-using wp_zadanie3.screens;
-
 namespace wp_zadanie3.interfaces
 {
     public interface IClock

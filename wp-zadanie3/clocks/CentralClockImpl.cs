@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading;
 using System.Threading.Tasks;
 using wp_zadanie3.interfaces;
-using wp_zadanie3.screens;
 
 namespace wp_zadanie3.clocks
 {
@@ -79,9 +76,9 @@ namespace wp_zadanie3.clocks
          */
         public bool AddOrRemoveSubscriber(IScreen screen)
         {
-            var newScreen = HasSubscriber(screen);
-            if (newScreen != null) {
-                Unsubscribe(screen);
+            var oldScreen = HasSubscriber(screen);
+            if (oldScreen != null) {
+                Unsubscribe(oldScreen);
                 return false;
             }
 
