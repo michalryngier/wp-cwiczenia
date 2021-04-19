@@ -155,14 +155,6 @@ namespace wp_zadanie3.clocks
                 Console.WriteLine("Cannot remove a screen.");
             }
         }
-
-        public void Start()
-        {
-            if (_working) return;
-            _timestamp = GetCurrentTimeStamp();
-            _working = true;
-            _clockTask = Task.Run(() => TimeLoop(++_clockTaskId));
-        }
 ```
 
 <div style="page-break-after: always; visibility: hidden"> 
@@ -170,6 +162,14 @@ namespace wp_zadanie3.clocks
 </div>
 
 ```
+       public void Start()
+        {
+            if (_working) return;
+            _timestamp = GetCurrentTimeStamp();
+            _working = true;
+            _clockTask = Task.Run(() => TimeLoop(++_clockTaskId));
+        }
+
         public void Stop()
         {
             _working = false;
@@ -184,12 +184,9 @@ namespace wp_zadanie3.clocks
             }
         }
 
-        /**
-         * Returns IScreen type object or null.
-         */
         public bool AddOrRemoveSubscriber(IScreen screen)
         {
-            var oldScreen = HasSubscriber(screen);
+            var oldScreen = IsSubscriber(screen);
             if (oldScreen != null) {
                 Unsubscribe(oldScreen);
                 return false;
@@ -199,7 +196,10 @@ namespace wp_zadanie3.clocks
             return true;
         }
 
-        private IScreen HasSubscriber(IScreen screen)
+        /**
+         * Returns IScreen type object or null.
+         */
+        private IScreen IsSubscriber(IScreen screen)
         {
             try {
                 if (_screens.Count - 1 < 0) throw new ArgumentNullException();

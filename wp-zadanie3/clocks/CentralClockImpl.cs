@@ -71,12 +71,9 @@ namespace wp_zadanie3.clocks
             }
         }
 
-        /**
-         * Returns IScreen type object or null.
-         */
         public bool AddOrRemoveSubscriber(IScreen screen)
         {
-            var oldScreen = HasSubscriber(screen);
+            var oldScreen = IsSubscriber(screen);
             if (oldScreen != null) {
                 Unsubscribe(oldScreen);
                 return false;
@@ -86,7 +83,10 @@ namespace wp_zadanie3.clocks
             return true;
         }
 
-        private IScreen HasSubscriber(IScreen screen)
+        /**
+         * Returns IScreen type object or null.
+         */
+        private IScreen IsSubscriber(IScreen screen)
         {
             try {
                 if (_screens.Count - 1 < 0) throw new ArgumentNullException();
