@@ -46,7 +46,8 @@ namespace wp_zadanie5
                         }
 
                         if (DictionaryHasValue(abstractPlayers, "RareGloves")) {
-                            abstractPlayers["Player"] = RareGlovesDecorator.RemoveAttribute(abstractPlayers["Player"]);
+                            abstractPlayers["Player"] =
+                                new RareGlovesDecorator().RemoveAttribute(abstractPlayers["Player"]);
                             abstractPlayers["RareGloves"] = null;
                             Console.WriteLine("Usunięto Rzadkie Rękawice.");
                             Console.WriteLine(abstractPlayers["Player"].CalculateStatistics());
@@ -65,7 +66,8 @@ namespace wp_zadanie5
                         }
 
                         if (DictionaryHasValue(abstractPlayers, "CommonBoots")) {
-                            abstractPlayers["Player"] = CommonBootsDecorator.RemoveAttribute(abstractPlayers["Player"]);
+                            abstractPlayers["Player"] = 
+                                new CommonBootsDecorator().RemoveAttribute(abstractPlayers["Player"]);
                             abstractPlayers["CommonBoots"] = null;
                             Console.WriteLine("Usunięto Zwyczajne Buty.");
                             Console.WriteLine(abstractPlayers["Player"].CalculateStatistics());
@@ -84,7 +86,8 @@ namespace wp_zadanie5
                         }
 
                         if (DictionaryHasValue(abstractPlayers, "Pants")) {
-                            abstractPlayers["Player"] = PantsDecorator.RemoveAttribute(abstractPlayers["Player"]);
+                            abstractPlayers["Player"] = 
+                                new PantsDecorator().RemoveAttribute(abstractPlayers["Player"]);
                             abstractPlayers["Pants"] = null;
                             Console.WriteLine("Usunięto Spodnie.");
                             Console.WriteLine(abstractPlayers["Player"].CalculateStatistics());
@@ -103,7 +106,8 @@ namespace wp_zadanie5
                         }
 
                         if (DictionaryHasValue(abstractPlayers, "EpicHelmet")) {
-                            abstractPlayers["Player"] = EpicHelmetDecorator.RemoveAttribute(abstractPlayers["Player"]);
+                            abstractPlayers["Player"] = 
+                                new EpicHelmetDecorator().RemoveAttribute(abstractPlayers["Player"]);
                             abstractPlayers["EpicHelmet"] = null;
                             Console.WriteLine("Usunięto Epicki Hełm.");
                             Console.WriteLine(abstractPlayers["Player"].CalculateStatistics());
@@ -123,7 +127,7 @@ namespace wp_zadanie5
 
                         if (DictionaryHasValue(abstractPlayers, "LegendarySword")) {
                             abstractPlayers["Player"] =
-                                LegendarySwordDecorator.RemoveAttribute(abstractPlayers["Player"]);
+                                new LegendarySwordDecorator().RemoveAttribute(abstractPlayers["Player"]);
                             abstractPlayers["LegendarySword"] = null;
                             Console.WriteLine("Usunięto Legendarny Miecz.");
                             Console.WriteLine(abstractPlayers["Player"].CalculateStatistics());
