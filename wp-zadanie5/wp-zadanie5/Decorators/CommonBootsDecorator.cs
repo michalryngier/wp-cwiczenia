@@ -6,17 +6,14 @@ namespace wp_zadanie5.Decorators
         private const int BaseDefence = 3;
         private const int BaseHealthPoints = 0;
 
-        private readonly AbstractPlayer _basePlayer;
-
         public CommonBootsDecorator(AbstractPlayer basePlayer)
         {
-            _basePlayer = basePlayer;
-            HealthPoints = BaseHealthPoints + _basePlayer.HealthPoints;
-            Attack = BaseAttack + _basePlayer.Attack;
-            Defence = BaseDefence + _basePlayer.Defence;
+            HealthPoints = BaseHealthPoints + basePlayer.HealthPoints;
+            Attack = BaseAttack + basePlayer.Attack;
+            Defence = BaseDefence + basePlayer.Defence;
         }
 
-        public new static AbstractPlayer RemoveAttribute(AbstractPlayer basePlayer)
+        public static AbstractPlayer RemoveAttribute(AbstractPlayer basePlayer)
         {
             basePlayer.Attack -= BaseAttack;
             basePlayer.Defence -= BaseDefence;

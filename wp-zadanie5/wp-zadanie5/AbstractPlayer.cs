@@ -12,10 +12,5 @@ namespace wp_zadanie5
         {
             return "HP: " + HealthPoints + "|Attack: " + Attack + "|Defence: " + Defence;
         }
-
-        public static AbstractPlayer RemoveAttribute(AbstractPlayer basePlayer)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
