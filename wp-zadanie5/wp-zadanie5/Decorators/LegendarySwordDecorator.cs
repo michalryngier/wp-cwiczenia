@@ -6,7 +6,6 @@ namespace wp_zadanie5.Decorators
         private const int BaseDefence = 2;
         private const int BaseHealthPoints = 0;
 
-
         public LegendarySwordDecorator(AbstractPlayer? basePlayer = null)
         {
             HealthPoints = BaseHealthPoints + (basePlayer?.HealthPoints ?? 0);
